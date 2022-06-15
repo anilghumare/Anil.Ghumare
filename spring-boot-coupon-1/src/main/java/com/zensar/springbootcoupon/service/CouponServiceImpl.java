@@ -3,9 +3,11 @@ package com.zensar.springbootcoupon.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zensar.springbootcoupon.dto.CouponDto;
 import com.zensar.springbootcoupon.entity.Coupon;
 import com.zensar.springbootcoupon.repository.CouponRepository;
 
@@ -13,22 +15,45 @@ import com.zensar.springbootcoupon.repository.CouponRepository;
 public class CouponServiceImpl implements CouponService {
 	@Autowired
 	private CouponRepository couponRepository;
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Override
-	public Coupon getCoupon(int couponId) {
-		return couponRepository.findById(couponId).get();
+	public CouponDto getCoupon(int couponId) {
+		Coupon coupon = couponRepository.findById(couponId).get();
+
+		// CouponDto dto = mapToDto(coupon);
+
+		// return dto;
+		return modelMapper.map(coupon, CouponDto.class);
 
 	}
 
 	@Override
-	public List<Coupon> getAllCoupons() {
-		return couponRepository.findAll();
+	public List<CouponDto> getAllCoupons() {
+		List<Coupon> listOfCoupons = couponRepository.findAll();
+		List<CouponDto> listOfCouponDto = new ArrayList<CouponDto>();
+
+		for (Coupon coupon : listOfCoupons) {
+			// listOfCouponDto.add(mapToDto(coupon));
+			listOfCouponDto.add(modelMapper.map(coupon, CouponDto.class));
+		}
+		return listOfCouponDto;
 
 	}
 
 	@Override
-	public void insertCoupon(Coupon coupon) {
-		couponRepository.save(coupon);
+	public CouponDto insertCoupon(CouponDto couponDto) {
+		// Coupon coupon = mapToEntity(couponDto);
+
+		Coupon coupon = modelMapper.map(couponDto, Coupon.class);
+
+		Coupon insertedCoupon = couponRepository.save(coupon);
+
+		// CouponDto mapToDto = mapToDto(insertedCoupon);
+		return modelMapper.map(insertedCoupon, CouponDto.class);
+
+		// return mapToDto;
 
 	}
 
@@ -39,9 +64,32 @@ public class CouponServiceImpl implements CouponService {
 	}
 
 	@Override
-	public void updateCoupon(int couponId, Coupon coupon) {
+	public void updateCoupon(int couponId, CouponDto couponDto) {
+
+		// Coupon coupon = mapToEntity(couponDto);
+
+		Coupon coupon = modelMapper.map(couponDto, Coupon.class);
+
 		couponRepository.save(coupon);
 
 	}
+
+	/*
+	 * public CouponDto mapToDto(Coupon coupon) { CouponDto dto = new CouponDto();
+	 * dto.setCouponId(coupon.getCouponId());
+	 * dto.setCouponCode(coupon.getCouponCode());
+	 * dto.setCouponExpDate(coupon.getCouponExpDate());
+	 * 
+	 * return dto; }
+	 * 
+	 * public Coupon mapToEntity(CouponDto couponDto) { Coupon coupon = new
+	 * Coupon(); coupon.setCouponId(couponDto.getCouponId());
+	 * coupon.setCouponCode(couponDto.getCouponCode());
+	 * coupon.setCouponExpDate(couponDto.getCouponExpDate());
+	 * 
+	 * return coupon;
+	 * 
+	 * }
+	 */
 
 }
