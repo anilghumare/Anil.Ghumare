@@ -19,15 +19,16 @@ import com.zensar.springbootcoupon.entity.Coupon;
 import com.zensar.springbootcoupon.service.CouponService;
 
 @RestController
-@RequestMapping("/coupon-api")
+@RequestMapping(value = "/coupon-api", produces = { MediaType.APPLICATION_JSON_VALUE,
+		MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
+				MediaType.APPLICATION_XML_VALUE })
 public class CouponController {
-	
+
 	@Autowired
 	private CouponService couponService;
 
 	// @RequestMapping("/coupons/{couponId}")
-	@GetMapping(value = "/coupons/{couponId}", produces = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_XML_VALUE })
+	@GetMapping(value = "/coupons/{couponId}")
 	public Coupon getCoupon(@PathVariable("couponId") int couponId) {
 		return couponService.getCoupon(couponId);
 
@@ -41,7 +42,7 @@ public class CouponController {
 	}
 
 	// @RequestMapping(value="/coupons", method=RequestMethod.POST)
-	@PostMapping(value = "/coupons", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	@PostMapping(value = "/coupons")
 	public void insertCoupon(@RequestBody Coupon coupon) {
 		couponService.insertCoupon(coupon);
 
