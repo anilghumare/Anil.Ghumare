@@ -11,7 +11,8 @@ public class SpringBootCoupon1Application {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootCoupon1Application.class, args);
 	}
-    @Bean
+
+	@Bean
 	public ModelMapper getModelMapper() {
 		return new ModelMapper();
 	}
