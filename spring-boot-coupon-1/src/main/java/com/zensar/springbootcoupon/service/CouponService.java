@@ -2,17 +2,15 @@ package com.zensar.springbootcoupon.service;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.zensar.springbootcoupon.dto.CouponDto;
-import com.zensar.springbootcoupon.entity.Coupon;
 
 public interface CouponService {
 
 	public CouponDto getCoupon(int couponId);
 
-	public List<CouponDto> getAllCoupons(int pageNumber, int pageSize);
+	public List<CouponDto> getAllCoupons(int pageNumber, int pageSize, String sortBy, Direction dir);
 
 	public CouponDto insertCoupon(CouponDto coupon);
 
