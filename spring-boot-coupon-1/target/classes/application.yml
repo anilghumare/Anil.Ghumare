@@ -12,4 +12,25 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - '*'
+      base-path: /myactuator
+  endpoint:
+    shutdown:
+      enabled: true
+  info:
+    build:
+      enabled: true
+    git:
+      enabled: true
+    env:
+      enabled: true
+logging:
+  level:
+    com:
+      zensar:
+        springbootdemo: debug
