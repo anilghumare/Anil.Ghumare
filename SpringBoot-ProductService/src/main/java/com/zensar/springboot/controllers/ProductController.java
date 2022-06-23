@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.zensar.springboot.dto.ProductDto;
 import com.zensar.springboot.entity.Product;
+
 import com.zensar.springboot.service.ProductService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
-@RequestMapping(value = "/product-api", produces = { MediaType.APPLICATION_JSON_VALUE,
-		MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
-				MediaType.APPLICATION_XML_VALUE })
+/*
+ * @RequestMapping(value = "/product-api", produces = {
+ * MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, consumes
+ * = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+ */
+@RequestMapping(value = "/product-api")
 public class ProductController {
 	// http://localhost:9999/product-api/products/
 
@@ -41,6 +48,7 @@ public class ProductController {
 
 	// @RequestMapping(value = "/products/{productId}", method = RequestMethod.GET)
 	@GetMapping(value = "/products/{productId}")
+	@Operation
 	public ResponseEntity<ProductDto> getProduct(@PathVariable("productId") int productId) {
 		return new ResponseEntity<ProductDto>(productService.getProduct(productId), HttpStatus.OK);
 
