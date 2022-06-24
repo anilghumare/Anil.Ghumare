@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.zensar.entity.Coupon;
 import com.zensar.entity.Product;
+import com.zensar.restclient.CouponRestClient;
 import com.zensar.services.ProductService;
 
 @RestController
@@ -26,20 +27,26 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 
+	/*
+	 * @Autowired private RestTemplate restTemplate;
+	 */
 	@Autowired
-	private RestTemplate restTemplate;
+	private CouponRestClient restClient;
 
 	@PostMapping("/")
 	public Product insertProduct(@RequestBody Product product) {
 
-		String couponCode = product.getCouponCode();
+		// String couponCode = product.getCouponCode();
 
-		ResponseEntity<Coupon> coupon = restTemplate
-				.getForEntity("http://localhost:6765/coupons/" + product.getCouponCode(), Coupon.class);
+		// ResponseEntity<Coupon> coupon = restTemplate
+		// .getForEntity("http://COUPON-SERVICE/coupons/" + product.getCouponCode(),
+		// Coupon.class);
 
-		Coupon couponObject = coupon.getBody();
+		Coupon coupon = restClient.getCoupon(product.getCouponCode());
 
-		product.setPrice(product.getPrice() - couponObject.getDiscount());
+		// Coupon couponObject = coupon.getBody();
+
+		product.setPrice(product.getPrice() - coupon.getDiscount());
 
 		return productService.insertProduct(product);
 	}
@@ -54,10 +61,11 @@ public class ProductController {
 	public Product getProduct(@PathVariable("productId") int productId) {
 		return productService.getProduct(productId);
 	}
+
 	@DeleteMapping("/{productId}")
 	public void delteProduct(@PathVariable("productId") int productId) {
 		productService.delteProduct(productId);
-		
+
 	}
 
 }

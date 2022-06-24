@@ -6,9 +6,16 @@ spring:
   jpa:
    hibernate:
     ddl-auto: update
+  application:
+   name: product-service
     
 server:
  port: 6767
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: true
 
   
   
