@@ -12,8 +12,8 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 @OpenAPIDefinition
 
 public class SpringBootDemo1Application extends SpringBootServletInitializer {
-     
-	//This method is for creating war file
+
+	// This method is for creating war file
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		// TODO Auto-generated method stub
@@ -21,6 +21,7 @@ public class SpringBootDemo1Application extends SpringBootServletInitializer {
 	}
 
 	public static void main(String[] args) {
+		System.out.println("Ram");
 		SpringApplication.run(SpringBootDemo1Application.class, args);
 	}
 
