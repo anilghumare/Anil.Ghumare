@@ -21,10 +21,14 @@ import com.zensar.springbootdemo.dto.StudentDto;
 import com.zensar.springbootdemo.entity.Student;
 import com.zensar.springbootdemo.service.StudentService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
-@RequestMapping(value = "/student-api", produces = { MediaType.APPLICATION_JSON_VALUE,
-		MediaType.APPLICATION_XML_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE,
-				MediaType.APPLICATION_XML_VALUE })
+//@RequestMapping(value = "/student-api", produces = { MediaType.APPLICATION_JSON_VALUE,
+// MediaType.APPLICATION_XML_VALUE }, consumes = {
+// MediaType.APPLICATION_JSON_VALUE,
+// MediaType.APPLICATION_XHTML_XML_VALUE })
+@RequestMapping(value = "/student-api")
 public class StudentController {
 
 	@Autowired
@@ -32,14 +36,15 @@ public class StudentController {
 
 	// @RequestMapping(value = "/students/{studentId}",method=RequestMethod.GET)
 	@GetMapping(value = "/students/{studentId}")
+	@Operation
 	public ResponseEntity<StudentDto> getStudent(@PathVariable("studentId") int studentId) {
 		return new ResponseEntity<StudentDto>(studentService.getStudent(studentId), HttpStatus.OK);
 	}
 
 	// @RequestMapping(value = { "/students", "/listOfStudents"
 	// },method=RequestMethod.GET)
-	
-	//http://localhost:9090/student-api/students?pageNumber=0&pageSize=5&sortBy=studentName&dir=DESC
+
+	// http://localhost:9090/student-api/students?pageNumber=0&pageSize=5&sortBy=studentName&dir=DESC
 	@GetMapping(value = { "/students", "/listOfStudents" })
 	public ResponseEntity<List<StudentDto>> getAllStudents(
 			@RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
@@ -47,7 +52,8 @@ public class StudentController {
 			@RequestParam(value = "sortBy", required = false, defaultValue = "studentName") String sortBy,
 			@RequestParam(value = "dir", required = false, defaultValue = "ASC") Direction dir) {
 
-		return new ResponseEntity<List<StudentDto>>(studentService.getAllStudents(pageNumber, pageSize, sortBy, dir), HttpStatus.OK);
+		return new ResponseEntity<List<StudentDto>>(studentService.getAllStudents(pageNumber, pageSize, sortBy, dir),
+				HttpStatus.OK);
 	}
 
 	// @RequestMapping(value = "/students",method=RequestMethod.POST)

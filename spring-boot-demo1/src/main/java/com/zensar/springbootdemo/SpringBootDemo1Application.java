@@ -6,20 +6,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 
 @SpringBootApplication
+@OpenAPIDefinition
 
-public class SpringBootDemo1Application {
+public class SpringBootDemo1Application extends SpringBootServletInitializer {
 
-	/*
-	 * @Override protected SpringApplicationBuilder
-	 * configure(SpringApplicationBuilder builder) { // TODO Auto-generated method
-	 * stub return super.configure(builder); }
-	 */
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		// TODO Auto-generated method stub
+		return super.configure(builder);
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootDemo1Application.class, args);
 	}
+
 	@Bean
 	public ModelMapper getModelMapper() {
 		return new ModelMapper();
