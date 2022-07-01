@@ -86,7 +86,7 @@ public class StudentController {
 
 	}
 
-	@GetMapping("/students/{studentName}/{studentAge}")
+	@GetMapping("/students/{studentname}/{studentAge}")
 	public ResponseEntity<List<StudentDto>> findByStudentNameAndStudentAge(
 			@PathVariable("studentName") String studentName, @PathVariable("studentAge") int age) {
 
