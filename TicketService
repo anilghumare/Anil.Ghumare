@@ -1,0 +1,13 @@
+package com.movieTicketBooking.movieTicketBooking.service;
+
+import java.util.List;
+
+import com.movieTicketBooking.movieTicketBooking.entity.TicketEntity;
+
+public interface TicketService {
+	
+	public TicketEntity bookMovieTicket(TicketEntity ticket, String title);
+	public TicketEntity getMovieTicketDetails(int ticketId);
+	public List<TicketEntity> getAllMovieTickets(int movieId);
+
+}
