@@ -1,0 +1,49 @@
+package com.movieTicketBooking.movieTicketBooking.serviceImpl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.movieTicketBooking.movieTicketBooking.entity.MovieEntity;
+import com.movieTicketBooking.movieTicketBooking.entity.TicketEntity;
+import com.movieTicketBooking.movieTicketBooking.exception.InvalidMovieIdException;
+import com.movieTicketBooking.movieTicketBooking.exception.InvalidTicketIdException;
+import com.movieTicketBooking.movieTicketBooking.repository.MovieRepo;
+import com.movieTicketBooking.movieTicketBooking.repository.TicketRepo;
+import com.movieTicketBooking.movieTicketBooking.service.TicketService;
+
+@Service
+public class TicketServiceImpl implements TicketService{
+	
+	private final TicketRepo ticketRepo;
+	private final MovieRepo movieRepo;
+	
+	public TicketServiceImpl(TicketRepo ticketRepo, MovieRepo movieRepo) {
+		this.ticketRepo = ticketRepo;
+		this.movieRepo = movieRepo;
+	}
+	
+
+	@Override
+	public TicketEntity bookMovieTicket(TicketEntity ticket, String title) {
+		// TODO Auto-generated method stub
+		//MovieEntity movie = movieRepo.findById(ticket.getMovie().getId()).orElseThrow(() -> new InvalidMovieIdException("Movie not found!"));
+		MovieEntity movie = movieRepo.findByTitle(title).orElseThrow(() -> new InvalidMovieIdException("Movie not found for title: " + title));
+		ticket.setMovie(movie);
+		ticket.setPrice(ticket.getUnitPrice() * ticket.getNoOfTickets());
+		return ticketRepo.save(ticket);
+	}
+
+	@Override
+	public TicketEntity getMovieTicketDetails(int ticketId) {
+		// TODO Auto-generated method stub
+		return ticketRepo.findById(ticketId).orElseThrow(() -> new InvalidTicketIdException("Ticket not found!"));
+	}
+
+	@Override
+	public List<TicketEntity> getAllMovieTickets(int movieId) {
+		// TODO Auto-generated method stub
+		return ticketRepo.findByMovieId(movieId);
+	}
+
+}
