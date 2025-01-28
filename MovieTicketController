@@ -1,0 +1,67 @@
+package com.movieTicketBooking.movieTicketBooking.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.movieTicketBooking.movieTicketBooking.entity.MovieEntity;
+import com.movieTicketBooking.movieTicketBooking.entity.TicketEntity;
+import com.movieTicketBooking.movieTicketBooking.service.MovieService;
+import com.movieTicketBooking.movieTicketBooking.service.TicketService;
+
+@RestController
+@RequestMapping("/theater")
+public class MovieTicketController {
+	
+	private final MovieService movieService;
+	private final TicketService ticketService;
+	
+	public MovieTicketController(MovieService movieService, TicketService ticketService) {
+		this.movieService = movieService;
+		this.ticketService = ticketService;
+	}
+	@PostMapping("/movie")
+	@ResponseStatus(HttpStatus.CREATED)
+	public MovieEntity createNewMovie(@RequestBody MovieEntity movie) {
+		return movieService.createNewMovie(movie);
+	}
+	
+	@GetMapping("/movie/{movieId}")
+	@ResponseStatus(HttpStatus.OK)
+	public MovieEntity getMovieDetails(@PathVariable int movieId) {
+		return movieService.getMovieDetails(movieId);
+	}
+	
+	@PostMapping("/movie/ticket/booking")
+	public ResponseEntity<TicketEntity> bookMovieTicket(@RequestBody Map<String, Object> request ) {
+		String title = (String)request.get("title");
+		TicketEntity ticket = new TicketEntity();
+		ticket.setType((String)request.get("type"));
+		ticket.setUnitPrice(Double.parseDouble(request.get("unitPrice").toString()));
+		ticket.setNoOfTickets(Integer.parseInt(request.get("noOfTickets").toString()));
+		TicketEntity bookedTicket = ticketService.bookMovieTicket(ticket, title);
+		return ResponseEntity.status(HttpStatus.OK).body(bookedTicket);
+	}
+	
+	@GetMapping("/movie/ticket/booking/{ticketId}")
+	@ResponseStatus(HttpStatus.OK)
+	public TicketEntity getMovieTicketDetails(@PathVariable int ticketId) {
+		return ticketService.getMovieTicketDetails(ticketId);
+	}
+	
+	@GetMapping("/movie/{movieId}/ticket")
+	@ResponseStatus(HttpStatus.OK)
+	public List<TicketEntity> getAllMovieTickets(@PathVariable int movieId) {
+		return ticketService.getAllMovieTickets(movieId);
+	}
+
+}
