@@ -1,0 +1,10 @@
+package com.movieTicketBooking.movieTicketBooking.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.movieTicketBooking.movieTicketBooking.entity.MovieEntity;
+
+public interface MovieRepo extends JpaRepository<MovieEntity, Integer>{
+	Optional<MovieEntity> findByTitle(String title);
+}
