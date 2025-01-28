@@ -1,0 +1,33 @@
+package com.movieTicketBooking.movieTicketBooking.serviceImpl;
+
+import org.springframework.stereotype.Service;
+
+import com.movieTicketBooking.movieTicketBooking.entity.MovieEntity;
+import com.movieTicketBooking.movieTicketBooking.exception.InvalidMovieIdException;
+import com.movieTicketBooking.movieTicketBooking.repository.MovieRepo;
+import com.movieTicketBooking.movieTicketBooking.service.MovieService;
+
+@Service
+public class MovieServiceImpl implements MovieService {
+
+	private final MovieRepo movieRepo;
+
+	public MovieServiceImpl(MovieRepo movieRepo) {
+		this.movieRepo = movieRepo;
+	}
+
+	@Override
+	public MovieEntity createNewMovie(MovieEntity movie) {
+		// TODO Auto-generated method stub
+
+		return movieRepo.save(movie);
+	}
+
+	@Override
+	public MovieEntity getMovieDetails(int movieId) {
+		// TODO Auto-generated method stub
+
+		return movieRepo.findById(movieId).orElseThrow(() -> new InvalidMovieIdException("Movie not found!"));
+	}
+
+}
