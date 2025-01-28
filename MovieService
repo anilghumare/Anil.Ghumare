@@ -1,0 +1,11 @@
+package com.movieTicketBooking.movieTicketBooking.service;
+
+import com.movieTicketBooking.movieTicketBooking.entity.MovieEntity;
+import com.movieTicketBooking.movieTicketBooking.repository.MovieRepo;
+
+public interface MovieService {
+	
+	public MovieEntity createNewMovie(MovieEntity movie);
+	public MovieEntity getMovieDetails(int movieId);
+	
+}
