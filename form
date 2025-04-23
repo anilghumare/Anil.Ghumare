@@ -1,0 +1,103 @@
+<div id="multiStepForm">
+  <div class="step" id="step1">
+    <label>First Name: <input type="text" id="firstName" /></label><br />
+    <label>Last Name: <input type="text" id="lastName" /></label><br />
+    <button onclick="nextStep(1)">Next</button>
+  </div>
+  <div class="step" id="step2" style="display:none">
+    <label>Email: <input type="text" id="email" /></label><br />
+    <label>Phone: <input type="text" id="phone" /></label><br />
+    <button onclick="prevStep(2)">Previous</button>
+    <button onclick="nextStep(2)">Next</button>
+  </div>
+  <div class="step" id="step3" style="display:none">
+    <label>Address: <input type="text" id="address" /></label><br />
+    <button onclick="prevStep(3)">Previous</button>
+    <button onclick="nextStep(3)">Next</button>
+  </div>
+  <div class="step" id="step4" style="display:none">
+    <label>Comments: <input type="text" id="comments" /></label><br />
+    <button onclick="prevStep(4)">Previous</button>
+    <button onclick="nextStep(4)">Next</button>
+  </div>
+  <div class="step" id="step5" style="display:none">
+    <h3>Preview</h3>
+    <p><strong>First Name:</strong> <span id="preview-firstName"></span></p>
+    <p><strong>Last Name:</strong> <span id="preview-lastName"></span></p>
+    <p><strong>Email:</strong> <span id="preview-email"></span></p>
+    <p><strong>Phone:</strong> <span id="preview-phone"></span></p>
+    <p><strong>Address:</strong> <span id="preview-address"></span></p>
+    <p><strong>Comments:</strong> <span id="preview-comments"></span></p>
+    <button onclick="prevStep(5)">Previous</button>
+    <button onclick="submitForm()">Submit</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+function nextStep(currentStep) {
+  saveStepData(currentStep);
+  document.getElementById('step' + currentStep).style.display = 'none';
+  const nextStepId = 'step' + (currentStep + 1);
+  document.getElementById(nextStepId).style.display = 'block';
+  if (currentStep === 4) loadPreview();
+}
+
+function prevStep(currentStep) {
+  document.getElementById('step' + currentStep).style.display = 'none';
+  const prevStepId = 'step' + (currentStep - 1);
+  document.getElementById(prevStepId).style.display = 'block';
+}
+
+function saveStepData(step) {
+  const fields = {
+    1: ['firstName', 'lastName'],
+    2: ['email', 'phone'],
+    3: ['address'],
+    4: ['comments']
+  };
+  fields[step].forEach(field => {
+    const value = document.getElementById(field).value;
+    localStorage.setItem(field, value);
+  });
+}
+
+function loadPreview() {
+  const fields = ['firstName', 'lastName', 'email', 'phone', 'address', 'comments'];
+  fields.forEach(field => {
+    document.getElementById('preview-' + field).innerText = localStorage.getItem(field) || '';
+  });
+}
+
+function submitForm() {
+  alert('Form submitted!');
+  localStorage.clear();
+}
+
+
+
+
+
+
+#multiStepForm {
+  font-family: Arial, sans-serif;
+  padding: 10px;
+}
+
+label {
+  display: block;
+  margin: 10px 0;
+}
+
+button {
+  margin-top: 10px;
+  margin-right: 10px;
+}
