@@ -1,0 +1,172 @@
+<%@ include file="/init.jsp" %>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
+<%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="com.liferay.portal.kernel.json.JSONObject" %>
+
+<aui:form method="get" name="weatherForm" id="weatherForm">
+    <aui:select name="country" label="Select Country" onchange="updateStates(this.value)">
+        <aui:option value="">-- Select Country --</aui:option>
+        <aui:option value="India">India</aui:option>
+        <aui:option value="USA">USA</aui:option>
+    </aui:select>
+
+    <aui:select name="state" label="Select State" onchange="updateCities(this.value)">
+        <aui:option value="">-- Select State --</aui:option>
+    </aui:select>
+
+    <aui:select name="city" label="Select City" onchange="submitForm()">
+        <aui:option value="">-- Select City --</aui:option>
+    </aui:select>
+</aui:form>
+
+<br />
+
+<%
+    JSONObject weatherData = (JSONObject) request.getAttribute("weatherData");
+    String error = (String) request.getAttribute("error");
+    String city = (String) request.getAttribute("city");
+%>
+
+<c:if test="${not empty error}">
+    <clay:alert message="${error}" displayType="danger" />
+</c:if>
+
+<c:if test="${weatherData != null}">
+    <clay:container-fluid>
+        <clay:card>
+            <clay:card-body>
+                <h5>Weather in <%= city %></h5>
+                <strong>Temperature:</strong> <%= weatherData.getJSONObject("current").get("temperature") %>°C<br/>
+                <strong>Humidity:</strong> <%= weatherData.getJSONObject("current").get("humidity") %>%<br/>
+                <strong>Wind Speed:</strong> <%= weatherData.getJSONObject("current").get("wind_speed") %> km/h<br/>
+                <strong>Weather:</strong> <%= weatherData.getJSONObject("current").getJSONArray("weather_descriptions").getString(0) %><br/>
+            </clay:card-body>
+        </clay:card>
+    </clay:container-fluid>
+</c:if>
+
+<script>
+    const stateMap = {
+        "India": ["Maharashtra", "Karnataka"],
+        "USA": ["California", "Texas"]
+    };
+
+    const cityMap = {
+        "Maharashtra": ["Mumbai", "Pune"],
+        "Karnataka": ["Bangalore", "Mysore"],
+        "California": ["Los Angeles", "San Francisco"],
+        "Texas": ["Houston", "Dallas"]
+    };
+
+    function updateStates(country) {
+        const stateSelect = document.getElementById("_com_demo_weather_WeatherForecastPortlet_state");
+        const citySelect = document.getElementById("_com_demo_weather_WeatherForecastPortlet_city");
+
+        stateSelect.innerHTML = '<option value="">-- Select State --</option>';
+        citySelect.innerHTML = '<option value="">-- Select City --</option>';
+
+        if (country && stateMap[country]) {
+            stateMap[country].forEach(state => {
+                const option = document.createElement("option");
+                option.text = state;
+                option.value = state;
+                stateSelect.add(option);
+            });
+        }
+    }
+
+    function updateCities(state) {
+        const citySelect = document.getElementById("_com_demo_weather_WeatherForecastPortlet_city");
+
+        citySelect.innerHTML = '<option value="">-- Select City --</option>';
+
+        if (state && cityMap[state]) {
+            cityMap[state].forEach(city => {
+                const option = document.createElement("option");
+                option.text = city;
+                option.value = city;
+                citySelect.add(option);
+            });
+        }
+    }
+
+    function submitForm() {
+        document.getElementById("weatherForm").submit();
+    }
+</script>
+
+
+
+
+package com.demo.weather.portlet;
+
+import com.demo.weather.config.WeatherApiConfiguration;
+import com.demo.weather.constants.WeatherForecastPortletKeys;
+import com.demo.weather.util.WeatherApiUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+
+import java.io.IOException;
+
+import javax.portlet.Portlet;
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.metatype.annotations.Designate;
+import java.util.Map;
+
+/**
+ * @author AG67176
+ */
+@Component(
+    configurationPid = "com.demo.weather.config.WeatherApiConfiguration",
+    immediate = true,
+    property = {
+        "com.liferay.portlet.display-category=category.sample",
+        "com.liferay.portlet.header-portlet-css=/css/main.css",
+        "com.liferay.portlet.instanceable=true",
+        "javax.portlet.display-name=WeatherForecast",
+        "javax.portlet.init-param.template-path=/",
+        "javax.portlet.init-param.view-template=/view.jsp",
+        "javax.portlet.name=" + WeatherForecastPortletKeys.WEATHERFORECAST,
+        "javax.portlet.resource-bundle=content.Language",
+        "javax.portlet.security-role-ref=power-user,user"
+    },
+    service = Portlet.class
+)
+@Designate(ocd = WeatherApiConfiguration.class)
+public class WeatherForecastPortlet extends MVCPortlet {
+
+    private volatile WeatherApiConfiguration _config;
+
+    @Activate
+    @Modified
+    protected void activate(Map<String, Object> properties) {
+        _config = org.osgi.service.component.annotations.ConfigurationFactoryUtil.createConfigurable(
+            WeatherApiConfiguration.class, properties);
+    }
+
+    @Override
+    public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
+            throws IOException, PortletException {
+
+        String city = renderRequest.getParameter("city");
+
+        if (city != null && !city.trim().isEmpty()) {
+            try {
+                JSONObject weatherData = WeatherApiUtil.getWeatherData(city, _config.apiUrl(), _config.apiKey());
+                renderRequest.setAttribute("weatherData", weatherData);
+                renderRequest.setAttribute("city", city);
+            } catch (Exception e) {
+                renderRequest.setAttribute("error", "Unable to fetch weather data. Please try again later.");
+            }
+        }
+
+        super.doView(renderRequest, renderResponse);
+    }
+}
