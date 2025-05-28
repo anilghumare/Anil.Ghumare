@@ -1,3 +1,105 @@
+<%@ page import="com.liferay.portal.kernel.json.JSONObject" %>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
+<%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+<%@ include file="/init.jsp" %>
+
+<aui:form method="get" name="weatherForm" id="weatherForm">
+    <aui:select name="country" label="Select Country" onchange="updateStates(this.value)">
+        <aui:option value="">-- Select Country --</aui:option>
+        <aui:option value="India">India</aui:option>
+        <aui:option value="USA">USA</aui:option>
+    </aui:select>
+
+    <aui:select name="state" label="Select State" onchange="updateCities(this.value)">
+        <aui:option value="">-- Select State --</aui:option>
+    </aui:select>
+
+    <aui:select name="city" label="Select City" onchange="submitForm()">
+        <aui:option value="">-- Select City --</aui:option>
+    </aui:select>
+</aui:form>
+
+<br />
+
+<%
+    JSONObject weatherData = (JSONObject) request.getAttribute("weatherData");
+    String error = (String) request.getAttribute("error");
+    String city = (String) request.getAttribute("city");
+%>
+
+<c:if test="${not empty error}">
+    <clay:alert message="${error}" displayType="danger" />
+</c:if>
+
+<c:if test="${weatherData != null}">
+    <clay:container-fluid>
+        <clay:col>
+            <clay:card>
+                <clay:card-body>
+                    <h5>Weather in <%= city %></h5>
+                    <strong>Temperature:</strong> <%= weatherData.getJSONObject("current").get("temperature") %>°C<br/>
+                    <strong>Humidity:</strong> <%= weatherData.getJSONObject("current").get("humidity") %>%<br/>
+                    <strong>Wind Speed:</strong> <%= weatherData.getJSONObject("current").get("wind_speed") %> km/h<br/>
+                    <strong>Weather:</strong> <%= weatherData.getJSONObject("current").getJSONArray("weather_descriptions").getString(0) %><br/>
+                </clay:card-body>
+            </clay:card>
+        </clay:col>
+    </clay:container-fluid>
+</c:if>
+
+<script>
+    const namespace = '<portlet:namespace />';
+
+    const stateMap = {
+        "India": ["Maharashtra", "Karnataka"],
+        "USA": ["California", "Texas"]
+    };
+
+    const cityMap = {
+        "Maharashtra": ["Mumbai", "Pune"],
+        "Karnataka": ["Bangalore", "Mysore"],
+        "California": ["Los Angeles", "San Francisco"],
+        "Texas": ["Houston", "Dallas"]
+    };
+
+    function updateStates(country) {
+        const stateSelect = document.getElementById(namespace + "state");
+        const citySelect = document.getElementById(namespace + "city");
+
+        stateSelect.innerHTML = '<option value="">-- Select State --</option>';
+        citySelect.innerHTML = '<option value="">-- Select City --</option>';
+
+        if (country && stateMap[country]) {
+            stateMap[country].forEach(state => {
+                const option = document.createElement("option");
+                option.text = state;
+                option.value = state;
+                stateSelect.add(option);
+            });
+        }
+    }
+
+    function updateCities(state) {
+        const citySelect = document.getElementById(namespace + "city");
+
+        citySelect.innerHTML = '<option value="">-- Select City --</option>';
+
+        if (state && cityMap[state]) {
+            cityMap[state].forEach(city => {
+                const option = document.createElement("option");
+                option.text = city;
+                option.value = city;
+                citySelect.add(option);
+            });
+        }
+    }
+
+    function submitForm() {
+        document.getElementById(namespace + "weatherForm").submit();
+    }
+</script>
 
 
 
@@ -77,103 +179,5 @@ public class WeatherForecastPortlet extends MVCPortlet {
 
 
 
-<%@ include file="/init.jsp" %>
-<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
-<%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="com.liferay.portal.kernel.json.JSONObject" %>
 
-<aui:form method="get" name="weatherForm" id="weatherForm">
-    <aui:select name="country" label="Select Country" onchange="updateStates(this.value)">
-        <aui:option value="">-- Select Country --</aui:option>
-        <aui:option value="India">India</aui:option>
-        <aui:option value="USA">USA</aui:option>
-    </aui:select>
-
-    <aui:select name="state" label="Select State" onchange="updateCities(this.value)">
-        <aui:option value="">-- Select State --</aui:option>
-    </aui:select>
-
-    <aui:select name="city" label="Select City" onchange="submitForm()">
-        <aui:option value="">-- Select City --</aui:option>
-    </aui:select>
-</aui:form>
-
-<br />
-
-<%
-    JSONObject weatherData = (JSONObject) request.getAttribute("weatherData");
-    String error = (String) request.getAttribute("error");
-    String city = (String) request.getAttribute("city");
-%>
-
-<c:if test="${not empty error}">
-    <clay:alert message="${error}" displayType="danger" />
-</c:if>
-
-<c:if test="${weatherData != null}">
-    <clay:container-fluid>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Weather in <%= city %></h5>
-                <p class="card-text">
-                    <strong>Temperature:</strong> <%= weatherData.getJSONObject("current").get("temperature") %>°C<br/>
-                    <strong>Humidity:</strong> <%= weatherData.getJSONObject("current").get("humidity") %>%<br/>
-                    <strong>Wind Speed:</strong> <%= weatherData.getJSONObject("current").get("wind_speed") %> km/h<br/>
-                    <strong>Weather:</strong> <%= weatherData.getJSONObject("current").getJSONArray("weather_descriptions").getString(0) %><br/>
-                </p>
-            </div>
-        </div>
-    </clay:container-fluid>
-</c:if>
-
-<script>
-    const stateMap = {
-        "India": ["Maharashtra", "Karnataka"],
-        "USA": ["California", "Texas"]
-    };
-
-    const cityMap = {
-        "Maharashtra": ["Mumbai", "Pune"],
-        "Karnataka": ["Bangalore", "Mysore"],
-        "California": ["Los Angeles", "San Francisco"],
-        "Texas": ["Houston", "Dallas"]
-    };
-
-    function updateStates(country) {
-        const stateSelect = document.getElementById("_com_demo_weather_WeatherForecastPortlet_state");
-        const citySelect = document.getElementById("_com_demo_weather_WeatherForecastPortlet_city");
-
-        stateSelect.innerHTML = '<option value="">-- Select State --</option>';
-        citySelect.innerHTML = '<option value="">-- Select City --</option>';
-
-        if (country && stateMap[country]) {
-            stateMap[country].forEach(state => {
-                const option = document.createElement("option");
-                option.text = state;
-                option.value = state;
-                stateSelect.add(option);
-            });
-        }
-    }
-
-    function updateCities(state) {
-        const citySelect = document.getElementById("_com_demo_weather_WeatherForecastPortlet_city");
-
-        citySelect.innerHTML = '<option value="">-- Select City --</option>';
-
-        if (state && cityMap[state]) {
-            cityMap[state].forEach(city => {
-                const option = document.createElement("option");
-                option.text = city;
-                option.value = city;
-                citySelect.add(option);
-            });
-        }
-    }
-
-    function submitForm() {
-        document.getElementById("weatherForm").submit();
-    }
-</script>
 
