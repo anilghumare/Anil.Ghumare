@@ -1,0 +1,184 @@
+package com.demo.weather.portlet;
+
+import com.demo.weather.config.WeatherApiConfiguration;
+import com.demo.weather.util.WeatherApiUtil;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+
+import java.io.IOException;
+import java.util.Map;
+
+import javax.portlet.Portlet;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.ConfigurationPid;
+import org.osgi.service.component.annotations.Designate;
+
+import javax.portlet.PortletException;
+
+@Component(
+    configurationPid = "com.demo.weather.config.WeatherApiConfiguration",
+    immediate = true,
+    property = {
+        "com.liferay.portlet.display-category=category.sample",
+        "com.liferay.portlet.instanceable=true",
+        "javax.portlet.display-name=Weather Forecast",
+        "javax.portlet.init-param.template-path=/",
+        "javax.portlet.init-param.view-template=/view.jsp",
+        "com.liferay.portlet.footer-portlet-javascript=/js/weather.js",
+        "javax.portlet.resource-bundle=content.Language",
+        "javax.portlet.security-role-ref=power-user,user"
+    },
+    service = Portlet.class
+)
+@Designate(ocd = WeatherApiConfiguration.class)
+public class WeatherForecastPortlet extends MVCPortlet {
+
+    private WeatherApiConfiguration _weatherApiConfiguration;
+
+    @Activate
+    @Modified
+    protected void activate(Map<String, Object> properties) {
+        _weatherApiConfiguration = ConfigurableUtil.createConfigurable(
+            WeatherApiConfiguration.class, properties);
+    }
+
+    @Override
+    public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
+            throws IOException, PortletException {
+
+        String city = renderRequest.getParameter("city");
+
+        if (city != null && !city.trim().isEmpty()) {
+            try {
+                JSONObject weatherData = WeatherApiUtil.getWeatherData(
+                    city, _weatherApiConfiguration.apiUrl(), _weatherApiConfiguration.apiKey());
+
+                renderRequest.setAttribute("weatherData", weatherData);
+                renderRequest.setAttribute("city", city);
+            } catch (Exception e) {
+                renderRequest.setAttribute("error", "Failed to fetch weather data.");
+            }
+        }
+
+        super.doView(renderRequest, renderResponse);
+    }
+}
+
+
+
+
+<%@ include file="/init.jsp" %>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
+<%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="com.liferay.portal.kernel.json.JSONObject" %>
+
+<div id="weatherApp">
+    <aui:form method="get" name="weatherForm" id="weatherForm">
+        <div class="form-group">
+            <label>Select Country</label>
+            <select v-model="selectedCountry" @change="updateStates" class="form-control">
+                <option value="">-- Select Country --</option>
+                <option v-for="country in countries" :value="country">{{ country }}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Select State</label>
+            <select v-model="selectedState" @change="updateCities" class="form-control">
+                <option value="">-- Select State --</option>
+                <option v-for="state in states" :value="state">{{ state }}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Select City</label>
+            <select v-model="selectedCity" class="form-control">
+                <option value="">-- Select City --</option>
+                <option v-for="city in cities" :value="city">{{ city }}</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" @click="submitForm">Get Weather</button>
+        <input type="hidden" name="city" :value="selectedCity" />
+    </aui:form>
+
+    <br />
+
+    <c:if test="${not empty error}">
+        <clay:alert displayType="danger" message="${error}" />
+    </c:if>
+
+    <%
+        JSONObject weatherData = (JSONObject) request.getAttribute("weatherData");
+        String city = (String) request.getAttribute("city");
+    %>
+
+    <c:if test="${weatherData != null}">
+        <clay:container-fluid>
+            <clay:row>
+                <clay:col>
+                    <clay:alert displayType="success" title="Weather for <%= city %>">
+                        <strong>Temperature:</strong> <%= weatherData.getJSONObject("current").get("temperature") %>°C<br />
+                        <strong>Humidity:</strong> <%= weatherData.getJSONObject("current").get("humidity") %>%<br />
+                        <strong>Wind Speed:</strong> <%= weatherData.getJSONObject("current").get("wind_speed") %> km/h<br />
+                        <strong>Weather:</strong> <%= weatherData.getJSONObject("current").getJSONArray("weather_descriptions").getString(0) %><br />
+                    </clay:alert>
+                </clay:col>
+            </clay:row>
+        </clay:container-fluid>
+    </c:if>
+</div>
+
+
+
+
+new Vue({
+    el: '#weatherApp',
+    data: {
+        countries: ["India", "USA"],
+        states: [],
+        cities: [],
+        selectedCountry: "",
+        selectedState: "",
+        selectedCity: "",
+        stateMap: {
+            India: ["Maharashtra", "Karnataka"],
+            USA: ["California", "Texas"]
+        },
+        cityMap: {
+            Maharashtra: ["Mumbai", "Pune"],
+            Karnataka: ["Bangalore", "Mysore"],
+            California: ["Los Angeles", "San Francisco"],
+            Texas: ["Houston", "Dallas"]
+        }
+    },
+    methods: {
+        updateStates() {
+            this.selectedState = "";
+            this.selectedCity = "";
+            this.states = this.stateMap[this.selectedCountry] || [];
+            this.cities = [];
+        },
+        updateCities() {
+            this.selectedCity = "";
+            this.cities = this.cityMap[this.selectedState] || [];
+        },
+        submitForm(event) {
+            if (!this.selectedCity) {
+                event.preventDefault();
+                alert("Please select a city.");
+                return;
+            }
+
+            document.getElementById("weatherForm").submit();
+        }
+    }
+});
