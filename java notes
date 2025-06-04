@@ -1,0 +1,502 @@
+Java
+
+** History of java
+	Developed by sun microsystem in 1995 now it is taken by oracle. It is designed for platform independent
+	** Platform: Hardware or software env in which program runs (OS + Hardware)
+	
+** Java is compiled as well as interpreted language.
+	JVM executes the java code. It takes byte code as input and convert it into machine code like (0 & 1).
+	JRE provides everything like evnvironment to jvm to execute the code
+	JDK: For developing we need JDK it provides compiler and documentation but once application is developed and we want to run on any others
+		Machine then we need only JRE and JVM (no need of JDK).
+		
+** How do we invoke JVM
+	Compiler compiles the code and check syntax and semantic and convert it into byte code or intermediate code (IMC) which is in .class file
+	javac fileName is used to compile the code
+	java className is used to invoke the jvm
+	
+** JDK and JRE are highly platform dependent (different differnt os)
+	Java is platform independent because of byte code or .class file
+	
+## Data Types 
+1) Primitive Data type: byte, short, int, float, double, char, long, boolean
+	** String and Array is not data type it is a class which is used as data type
+	#Two ways to create object of String and Array
+		1)String s = new String("Zensar"); or String s = "Zensar";
+		2)int numbers = new int[5]; or int numbers[] = {1, 5, 3, 8, 9};	
+			*We can create object of String and Array with and without using new keyword
+			** That's why String and Array are known as first class object
+  ## byte, short
+					int(4), float(4), double(8), long(8), boolean
+	char
+	L -> R All assignments are possible
+	L <- R Assignment not possible
+
+OOps
+1) Inheritance (Is-A relationship): It is a mechanism in which one object acquires all the properties and behaviours of parent object
+				* We can create  a new classes that are built upon existing classes.
+				* When we inherits methods from an existing class, we can reuse method fields of the parent class
+		** Types of Inheritance
+			1) Single: Class B extends Class A
+			2) Multilevel: Class B extends Class A, Class C extends Class B
+			3) Hierarchical: Class B and C both extends Class A
+		** Multiple inheritance is not supported in java through class
+			 4) Multiple: Class c inherits both class A & class B
+		
+		Q) Why multiple inheritance is not supported in Java?
+		Suppose there are three classes A, B, and C. The C class inherits A and B classes. If A and B classes have the same method and we 
+		call it from child class object, there will be ambiguity to call the method of A or B class.
+		** Java supports multiple inheritance through interface, where class can implement multiple interfaces
+		
+2) Coupling: It refers to the knowledge or information or dependency of another class. It arises when classes are aware of each other.
+			*If a class has detail information of another class, there is strong coupling.
+			* We can use interface for the weaker coupling.
+			
+3) Cohesion: It's measure of how well the elements inside a module (like a class or method) work together to achieve a single purpose.
+			** High Cohesion: When a class or method is highly cohesive, it means that it focuses on single task.
+			High cohesion makes the code easier to understand, maintain and reuse.
+			ONE CLASS ONE RESPONSEBILITY
+
+4) Association: It represents the relationship between the object
+				1) One to one 2) One to Many 3) Many to one 4)Many to Many
+				
+5) Aggregation (Has-A relationship): It represents the relationship between the objects
+				For ex. Employee object contains information such as id, name, emailid. etc. it contains one more object name address, which
+				contains its own information such as city, state, zipcode (Employee Has-A Address)
+				
+6) Method Overloading In java: If a class has multiple methods having same name but different parameters it is known as method overloading.
+				** If we have to perform only one operation having same name of the methods increase the readability of the program.
+				1) Changing no. of arguments
+				2) changing data type of arguments
+				
+7) Method Overriding: If a subclass provides a specific implementation of the method that has been declared by one of its parent class,
+				it is known as method overriding.
+				Rules 1) Same name as in parent class method
+					2) Same parameters
+					3) There must be an Is-A relationship (inheritance)
+					
+8) Super Keyword: The super keyword is a reference variable which is used to refer immediate parent class object.
+					*** Whenever we create the instance of subclass, an instance of parent class is created implicitly which is refered by
+					super keyword
+					** Usage: 1) super Can be use to refer immediate parent class instance variable
+							   2) super can be used to invoke immediate parent class method
+							   3) super() can be used to invoke immediate parent class constructor
+							   
+9) Instance Initializer block: It is used to intitialize the instance data member. It run each time when object of the class is created.
+					compiler copies the instance intitializer block in the constructor after the first statement super()
+					Sequence->> super()
+								Instance initializer block
+								constructor
+								
+10) Final Keyword: 1) Final Variable: Blank final variable can be intitialized in the constructor only.
+					 static final variable: It will be initialized in static block only.
+					 If we make any variable as final we can not change the value (It will be constant).
+					2) Final Method: If we make any method as final we can not override it.
+					3) Final Class: If we make any class as Final then we cannot extend it.
+			Q) Is final method inherited ?
+			-> Yes, final method is inherited but we cannot override it.
+			
+11) Polymorphism: it is a concept by which we can perform a single action in different ways
+				poly -> many, morph -> form
+		** Types of Polymorphism
+			1) Compile-Time Polymorphism: Method overloading is used to achieve compile-time polymorphism.
+				** The compiler uses amount and the kind of parameters provided to it during compilation to decide which method to call. This
+				choice is made during compilation, which is why its called compiled time polymorphism
+			
+			2) Run-Time Polymorphism or Dynamic Method Dispatch: It is a process in which a call to an overridden method is resolved at 
+				runtime rather than compile time.
+				**In this process, an overridden method is called through the reference variable of super class.
+				
+				## Upcasting: If the reference variable of parent class refers to the object of child class, it is known as upcasting.
+				
+			Example of Java Runtime Polymorphism
+In this example, we are creating two classes Bike and Splendor. Splendor class extends Bike class and overrides its run() method. We 
+are calling the run method by the reference variable of Parent class. Since it refers to the subclass object and subclass method overrides 
+the Parent class method, the subclass method is invoked at runtime.
+	Since method invocation is determined by the JVM not compiler, it is known as runtime polymorphism
+	
+			** Runtime polymorphism can't be achieved by data members.
+			Examples: 1) simple polymorphism 2) Hierarchical(Animal, Dog, cat) 3) Multilevel inheritance (Animal, Dog, babydog)
+			
+12) Abstraction: Abstraction is a process of hiding the implementation details and showing only functionality to the user.
+				**It shows only essential things to the user and hides the internal details, for example Sending the sms where we type the
+				text and send the message. We do not know the internal processing of message delivery.
+		** Ways to achieve Abstraction
+			1) Using Abstract class(0 to 100%)
+			2) Using Interface (100%)
+			
+13) Abstract Class: A) Abstract class must be declared with an abstract keyword.
+					B) It can have abstract and non-abstract methods.
+					C) It cannot be instantiated.
+					D) It can have constructors and static methods also.
+					E) It can have final methods which will force the subclass not to change the body of the method.\
+		** Abstract Method: A method which is declared as abstract and does not have implementation is known as abstract method.
+		
+14) Interface: An interface is a blueprint of a class. It has static constants and abstract methods.
+				** There can be only abstract method in interface, not method body.
+				** It is used to achieve abstraction and multiple inheritance in java.
+				** It can be used to achieve loose coupling
+				** interface represents Is-A relationship.
+				** It can not be instantiated just like abstract class.
+				
+				** All the methods in an interface are declared with the empty body, and all fields are public, static and final by default.
+				The Java compiler adds public and abstract keywords before the interface method. Moreover, it adds public, static and 
+				final keywords before data members.
+				** Since java 8 we can have default method and static method in interface.
+				
+15) Multiple Inheritance in Java by Interface: If a class implements multiple interfaces, or an interface extends multiple interfaces, it
+			is known as multiple inheritance.
+			
+16) Package: Group of similar types of classes, interfaces and sub-packages
+			Built in package: java.io, java.util, java.sql, java.lang
+		** Advantages: 1) To categorized classes and interfaces so that they can be easily maintained.
+						2) It provides access protection
+						3) It removes naming colision
+		** How to access package from another package
+			1) import package.* ->> All the classes and interfaces will be available
+			2) import package.className; ->> only declared class is available
+			3) fully qualified name ->> It is generally used when two packages have same class name e.g java.util and java.sql both contain Date class
+			4) If we import package sub-packages will not be imported.
+			
+17) Encapsulation: It is a process of wrapping code and data together in a single unit, for example capsule which is mixed of several medicine
+	** We can create fully encapsulated class by making all the data members of the class private. Now we can use getter and setter methods
+	to get and set the data in it. The Java Bean class is the example of fully encapsulated class.
+	**Advantages: 1) By providing only setter or getter method, we can make the class read only or write only.
+				  2) It provides us the control over the data.
+				  3)It is a way to achieve data hiding
+				  4) The encapsulate class is easy to test
+				  
+18) Object Class: Object class is the root class of all the classes 
+
+19) Java Arrays: Java array is an object which contains elements of a similar data type. The element of an array are stored in a contagious
+			memory location.
+			** We can store only the fixed size of elements in the array.
+		** Types of Array in java 1) Single dimensional array 2) Multi-Dimensional Array
+		
+
+##String: String is a sequence of characters.
+			It is an immutable class in Java (java.lang.String).
+			We can delcare string differnt ways 
+			1) String literal
+				String str1 = "Hello";
+			2) String object using new keyword
+				String str2 = new String("Hello");
+		** String literal are stored in the String pool
+		** String Objects created using new keyword are stored in the heap memory
+		
+		** String object cannot be modified after creation.
+		** Any modification results in a new String object being created.
+		
+		String s = "Hello";
+		s.concat(" world);
+		sysout(s) output is Hello means unchanged
+		s = s.concat(" World");
+		Now s refers to "Hello World";
+		
+	## Why is String immutable ?
+	1) Security:- Used in authentication, class loading etc.
+	2) Performance:- String pooling reduces memory usage
+	
+ ## Java maintains a special String Pool inside the heap.
+	When string is created using literals, JVM first check if it exists in the pool; if not, it creates a new one.
+	String s1= "Hello";
+	String s2= "Hello";
+	
+	sysout(s1 == s2); true (same object in pool);
+	
+	String s3 = new String("Hello");
+	s1 == s3 false (different objects)
+	
+ ## String Comparision Using == vs equals()
+		String s1 = "Hello";
+		String s2 = new String("Hello")
+		s1 == s2    false (different object)
+		s1.equals(s2)   true (content is same)
+		
+		== compares reference (memory location)
+		equals() compares content.
+		
+## Mutable Alternatives StringBuilder And StringBuffer
+	StringBuilder sb = new StringBuilder("Hello");
+	sb.append(" World");
+	sysout(sb); output Hello World
+	
+	
+## Common String Interview Questions 
+
+	1) Reverse a string 
+		String str = "Hello";
+		String reversed = new StringBuilder(str).reverse().toString(); output "olleH"
+		
+	2) Check if a String is Palindrome
+		public static boolean isPalindrome(String str) {
+		return str.equals(new StringBuilder(str).reverse().toString());
+		main method
+		sysout(isPalindrome("madam")); true
+		
+	3) Count Occurrences of a character
+		String str = "programmming";
+		char ch = 'm'
+		long count = str.chars().filter(c -> c == ch).count();
+		sysout(count); //2
+		
+
+## Java 8 Fetaures: 
+1) Functional Interface: An interface that contains exactly one abstract method is known as 
+						It can have any number of default, static methods but can have only one abstract method
+						java provides @FunctionalInterface annotaion to mark an interface as functional interface
+						
+2) Lambda Expression: lambda expression were introduced in java 8 as part of the functional programmming. It allows us to write more
+						concise and redable code by enabling fuctional-style programming
+						
+						lambda expression is a short block of code that takes in paramters and returns a value, similar to an anonymous class
+						** It is primarly used with functional interface.
+						
+						Example //Lambda with single parameter
+						x -> x * 2
+						// lambda with multiple parameters
+						(x, y) -> x+y
+						// lambda with a block statement
+						(x, y) -> {
+							int sum = x + y;
+							return sum;
+						}
+						
+		## why use lambda expression
+		1) Reduce biolerplate code: No need to write anonymous inner class.
+		2) improve redability: code is more concise and easier to understand
+		3) Better performance : more efficinet than anonymous class.
+		
+	@FunctionalInterface
+	interface Addable {
+		int add(int a, int b);
+	}
+ class Demo {
+	public static void main(String[] args) {
+		Addable addable = (a, b) -> {
+			 return (a + b);
+		};
+		System.out.println(addable.add(5, 6));
+	}
+}
+
+
+## Java Collection: 
+
+	list (ordered allows duplicate)
+	List<String> list = new ArrayList<>();
+	list.add("Anil");
+	sysout(list);
+	duplicate allow
+	
+	
+	set interface; unique element, unordered 
+	Set<Integer> set = new HashSet<>();
+	set.add(10);
+	set.add(20);
+	set.add(10);
+	sysout(set);
+	output 10, 20
+	
+	Map Interface: (key-value pairs, no duplicate in keys)
+	Map<Integer, String> map = new HashMap<>();
+	map.add(1, "Laptop");
+	map.add(2, "Mouse");
+	
+	common collections method 
+	1) add(E e)
+	2) remove(E e)
+	3) size()
+	4) contains(E e) check if elements exists
+	5) isEmpty(); check is empty 
+	6) clear() removes all elements
+	
+
+
+********************************************************Concepts Begins*****************************************************************
+
+## Thread concept in Java
+	* Before thread we were unable to run more than one task in parallel. to remove this drawback, thread concept was introduced.
+	* A Thread is a very light-weighted process, or we can say the smallest part of the process that allows a program to operate more 
+	  efficiently by running multiple tasks simultaneously.
+	* In order to perform complicated tasks in the background, we used the Thread concept in Java.
+	* Benefit: If a thread gets exception or an error at the time of its execution, it dosen't affect the execution of other thread.
+	* All the threads share a common memory and have their own stack, local variables and program counter.
+	
+	* When multiple threads are executed in parallel at the same time, this process is known as Multithreading.
+	
+	* In a simple way, a Thread is a:
+
+	Feature through which we can perform multiple activities within a single process.
+	Lightweight process.
+	Series of executed statements.
+	Nested sequence of method calls.
+	
+	* Threads can be created by using two mechanisms
+		1) Extending the thread class
+		2) Implementing the Runnable interface
+		
+1) Extending the thread class: Create a class that extend Thread class. This class overrides the run method available in the Thread class.
+								A thread begins its life in inside run() method. We create an object of new class and call start() method
+								to start execution of thread. start() method invokes run() method.
+
+2) Implementing the Runnable interface: If we want to extend one more class with Thread class then we can't do it because multiple
+										inheritance is not possible in java.
+									* Thread class implements Runnable interface and Runnable is a functional interface which has only
+									one abstract method run().
+								* Thread thread = new Thread(new ClassThatImplementedRunnable);
+								thread.start()
+								
+3) Using lambda expression: Runnable is a fuctional interface so we can use lambda expression
+						* public static void main(String[] args) {
+							Runnable runnable = () -> {
+							for (int i=0; i<10; i++) {
+							sysoust ("10 threads");
+							}
+							};
+							runnable.run();
+							
+## Difference between extending Thread class and Implementing Runnable interface
+	- Extending the Thread class: The class directly inherits from Thread, meaning it cannot extend any other class.
+	- Implementing the Runnable interface: The class implements Runnable, so it can still extend another class.
+	- Best practice is to preferred Runnable interface for better design and reusability.
+							
+## Lifecycles and States of thread in java:
+		* thread can exist in any one of the following state
+		1) New State
+		2) Runnable State
+		3) Blocked State
+		4) Waiting State
+		5) Timed waiting state
+		6) Terminated State
+		
+	1) New State: when new thread is created it is in new state. The thread has not yet started to run when the thread is in new state.
+	2) Runnable State: Thread is ready to run. A thread might actually be running or it might be ready to run at any instant of time.
+	3) Blocked State: The thread will be in blocked state when it is trying to acquire a lock but currently the lock is acquired by the
+					other thread. The thread will move from the blocked state to runnable state when it acquires the lock.
+	4) Waiting: The thread will be in waiting state when it calls wait() method or join() method
+	5) Timed Waiting: when a thread calls sleep or a conditional wait, it is moved to a timed waiting state
+	6) Terminated State: A thread terminated because of the following reason:
+				a) When the code of the thread has been executed by the program.
+				b) Because of unhandled exception
+				
+## Implementing the Thread States in Java
+	To get the current state of the thread, use Thread.getState() method. java provides java.lang.Thread.State class that defines the ENUM
+	constants for the state of a thread. as a summary of which is given below
+	
+	1) New: public static final Thread.State NEW
+											RUNNABLE
+											BLOCKED
+											WAITING
+											TIMED_WAITING
+											TERMINATED
+											
+## What is the difference between start() and run() method
+	start() is used to start a new thread and calls its run() method. It will create new thread.
+	run() is just a normal method; if called directly, it won't create a new thread. no new thread is created and the run() method is
+				executed on the current thread i.e main thread. Hence no multi-threading takes place. The run() method is called as a 
+				normal function call.
+				
+	##Multiple invocation 
+	we can't call the start() method twice otherwise it will throw an IllegalStateException
+	whereas run() method can be called multiple times as it just a normal method calling.
+	
+	eg. class myThread extends Thread  {
+			public void run() {
+				sysout("Thread is running");
+			public class main {
+				public static void main(String[] args) {
+					MyThread t1 = new MyThread();
+					t1.run();		//This will run in  the main thread (not multithreading)
+					t1.start();		//This will create a new thread
+					
+## Main Thread: Java provides built in support for multithreading programming. A multithreaded programs contains two or more parts 
+				that can run concurrently. Each part of such a program is called a thread, and each thread defines a separate path of excecution.
+				When a java program starts up, one thread begins running immediately. This is usually called the main thread of our program 
+				because it is the one that is executed when our program begins
+				
+			*Properties associated with the main thread:
+				1) It is the thread from which other child thread cause to start suddenly.
+				2) It is the last thread to finish execution because it performs various shutdown actions.
+				
+			Jvm ----> Main Thread ------> child thread A -----> child thread C
+								  ------> child thread B
+				----> Other Daemon Thread (e.g. Garbage Collector)
+				
+		* The default priority of main thread is 5 and 
+		// Getting reference to Main thread (inside main method)
+        Thread t = Thread.currentThread();
+ 
+        // Getting name of Main thread
+        System.out.println("Current thread: "
+                           + t.getName());
+						 
+		## For each program a main thread is created by JVM 
+			The main thread first verifies the existance of the main() method, and then it initializes the class.
+			
+##	Thread priority in multithreading
+
+	Java being works within a Multithreading environment in which the thread scheduler assigns the processor to a thread based on the
+	priority of the thread.
+	
+	## Constant 
+	1) public static int NORM_PRIORITY------------------------> Sets the default priority for the thread(priority: 5)
+	2) public static int MIN_PRIORITY -----------------------> Sets the minimum priority for the thread (priority: 1)
+	3) public static int MAX_PRIORITY -----------------------> Sets the maximum priority for the thread (10)
+	
+		Thread.getPriority() -----------> Returns priority of current thread
+		Thread.setPriority(int priority) --------> sets the nuew priority (should be or between 1 & 10)
+	
+## Methods to Set the Thread Name
+	1) Creating the thread and passing the thread's name through constructor (Direct method)
+			class TestThread extends Thread {
+			TestThread(String name) {
+				super(name);
+				// run method 
+				}
+	2) Using the setName() method of thread class (Indirect method)
+	
+## Method to fetch the thread name
+	public void run() {
+		sysout(Thread.currentThread().getName());
+		
+## Java Thread.sleep() Method.
+	The sleep method is used to stop the execution of the current thread for a specific duration of time and after that time duration is
+	over, the thread which is executing earlier starts to execute again.
+	** There are 2 variations of the sleep() method in java thread. These are`	1
+	1) public static void sleep(long millis)
+	2) public static void sleep(long millis, int nanos)
+	 ** millis: Duration of time in millisecond for which thread will sleep
+	 ** nanos: additional time in nanoseconds for which for which we want the thread to sleep.
+	# We can use Thread.sleep() method for any thread i.e for main thread or any other thread.
+	# Both the sleep() methods are static, meaning they can be accessed using the Thread class.
+	
+## Daemon Thread: These threads are low-priority threads that run in the background to perform tasks such as garbage collection or provide
+					services to user threads.
+				 * When all user threads finish their execution, the JVM automatically terminates the daemon thread.
+				 
+## What is synchronization in Java:
+	Synchronization ensures that only one thread accesses a shared resource at a time, preventing race conditions.
+	eg. public synchronized void increment() {
+			count++;
+			}
+			
+## What is Thread Pool ?
+	A Thread Pool is a collection of worker threads and efficiently handle multiple tasks.
+	eg. Example using ExecutorService
+	
+	
+## Collections in Java:
+	*Any group of individual objects that are represented as a single unit is known as a java collection of objects.
+	* In java, the Collection interface (java.util.Collection) and Map interface (java.util.Map) are the two main root interfaces of java
+		collection classes
+	# Advantages:
+	1) Consistent API: The API has a basic set of interfaces like Collection, Set, List or Map, all the classes (ArrayList, LinkedList,
+		Vector, etc) that implement these interfaces have some common set of methods.
+		
+ # Hierarchy of the Collection Framework in Java
+	* The utility package, (java.util) contains all the classes and interfaces that are required by the collection framework. The collection
+		framework contains Iterable interface which provides the iterator to iterate through all the collections. This interface is extended
+		by the Collection framework which acts as a root for the collection framework. All the collections extend this collection interface therby 
+		extending the properties of the iterator and the method of this interface.
+
